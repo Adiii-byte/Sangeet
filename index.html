@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sangeet</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="tab-home">
+
+  <nav>
+    <button data-tab="home" class="on">🏠 Home</button>
+    <button data-tab="search">🔍 Search</button>
+    <button data-tab="library">📚 Library</button>
+    <button data-tab="youtube">▶ YouTube</button>
+    <button data-tab="drive">☁ Drive</button>
+  </nav>
+
+  <main>
+    <h1>Sangeet</h1>
+
+    <div class="bar only-search">
+      <input id="q" placeholder="Search a song...">
+      <button id="btn">Search</button>
+    </div>
+
+    <div id="genres" class="only-home"></div>
+
+    <div class="only-library">
+      <label class="filebtn">📁 Meri files
+        <input type="file" id="files" accept="audio/*" multiple hidden>
+      </label>
+    </div>
+
+    <div class="only-drive">
+      <div class="bar">
+        <button id="dMine">🎼 Sangeet ki Drive</button>
+        <button id="dYours">👤 Meri Google Drive</button>
+      </div>
+      <p id="dNote">Do option: Sangeet ki folder ke gaane, ya apni Google Drive ke gaane.</p>
+    </div>
+
+    <div class="only-youtube">
+      <div class="bar">
+        <input id="yq" placeholder="YouTube pe gaana dhundo...">
+        <button id="ybtn">Search</button>
+      </div>
+      <p id="ytNote">Is section mein YouTube ke ads aayenge (official player).</p>
+      <div id="ytWrap"><div id="ytPlayer"></div></div>
+      <div id="ytList"></div>
+    </div>
+
+    <div id="card">
+      <div class="np">
+        <div id="npArt"></div>
+        <div>
+          <div id="npTitle">Sangeet</div>
+          <div id="npArtist"></div>
+          <div id="now">Koi song select karo</div>
+        </div>
+      </div>
+
+      <div class="mid">
+        <div class="controls">
+          <button id="shuffleBtn" class="toggle">🔀</button>
+          <button id="prevBtn">⏮</button>
+          <button id="playBtn">▶</button>
+          <button id="nextBtn">⏭</button>
+          <button id="repeatBtn" class="toggle">🔁</button>
+        </div>
+        <div class="seekrow">
+          <span id="tCur">0:00</span>
+          <input type="range" id="seek" value="0" min="0" max="100" step="0.1">
+          <span id="tTot">0:00</span>
+        </div>
+      </div>
+
+      <div class="vol">🔊 <input type="range" id="vol" min="0" max="1" step="0.01" value="1"></div>
+      <audio id="audio"></audio>
+    </div>
+
+    <div id="details">
+      <div id="artistInfo"></div>
+      <div id="similar"></div>
+      <pre id="lyrics"></pre>
+    </div>
+
+    <div id="list"></div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="youtube.js"></script>
+  <script src="drive.js"></script>
+</body>
+</html>

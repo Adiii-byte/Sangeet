@@ -1,0 +1,201 @@
+/* ===== Basic ===== */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #2a1a14, #121212 60%);
+  color: white;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+}
+
+h1 { color: #ff7a45; margin: 0 0 12px; }
+button { border: none; cursor: pointer; color: white; font-size: 16px; }
+input { font-size: 16px; }
+main { padding: 16px 16px 90px; }
+
+/* ===== Tabs ke hisse dikhana/chhupana ===== */
+body.tab-home .only-search, body.tab-home .only-library,
+body.tab-search .only-home, body.tab-search .only-library,
+body.tab-library .only-home, body.tab-library .only-search { display: none; }
+
+/* ===== Navigation (phone: neeche, laptop: sidebar) ===== */
+nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 5;
+  display: flex; background: #1a1a1a; border-top: 1px solid #3a2a22;
+}
+nav button { flex: 1; background: none; padding: 14px; opacity: 0.6; }
+nav button.on { opacity: 1; color: #ff7a45; }
+
+/* ===== Search bar, buttons, chips ===== */
+.bar { display: flex; gap: 8px; margin-bottom: 16px; }
+.bar input { flex: 1; padding: 12px; border: none; border-radius: 20px; }
+.bar button, .filebtn {
+  padding: 12px 20px; border-radius: 20px; font-weight: bold;
+  background: linear-gradient(135deg, #ff4d6d, #ff9f43);
+}
+.filebtn { display: inline-block; cursor: pointer; margin-bottom: 16px; }
+#genres { margin-bottom: 16px; }
+.chip {
+  display: inline-block; background: #2a2a2a; padding: 6px 12px;
+  margin: 4px 4px 0 0; border-radius: 20px; cursor: pointer; font-size: 14px;
+}
+.chip:hover { background: #ff7a45; color: black; }
+
+/* ===== Now Playing card (phone: upar bada card) ===== */
+#card {
+  background: #1a1a1a; border-radius: 24px; padding: 16px; margin-bottom: 20px;
+  box-shadow: 0 0 30px rgba(255, 122, 69, 0.25);
+}
+.np { text-align: center; }
+#npArt {
+  width: 220px; height: 220px; margin: 0 auto 12px; border-radius: 20px;
+  background-color: #2a2a2a;
+  background-image: linear-gradient(135deg, #ff4d6d, #ff9f43);
+  background-size: cover; background-position: center;
+  box-shadow: 0 0 30px rgba(255, 122, 69, 0.5);
+}
+#npTitle { font-size: 22px; font-weight: bold; }
+#npArtist { color: #ff9f43; margin-bottom: 6px; }
+#now { color: gray; font-size: 13px; min-height: 16px; }
+
+.controls { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 8px 0; }
+.controls button { background: none; font-size: 26px; padding: 8px; border-radius: 50%; }
+.controls .toggle { opacity: 0.5; }
+.controls .toggle.on { opacity: 1; background: #3a2a22; }
+.controls #playBtn {
+  width: 64px; height: 64px; font-size: 28px;
+  background: linear-gradient(135deg, #ff4d6d, #ff9f43);
+  box-shadow: 0 0 20px rgba(255, 122, 69, 0.6);
+}
+
+.seekrow { display: flex; align-items: center; gap: 8px; font-size: 12px; color: gray; }
+#seek, #vol { accent-color: #ff7a45; }
+#seek { flex: 1; }
+.vol { display: none; }
+
+/* ===== Gaano ki list ===== */
+.track {
+  display: flex; align-items: center; gap: 12px; padding: 10px;
+  border-radius: 12px; cursor: pointer;
+}
+.track:hover { background: #2a2a2a; }
+.track.playing { background: #3a2a22; }
+.track.playing .artist { color: #ff9f43; }
+.track img, .noimg {
+  width: 50px; height: 50px; border-radius: 10px; object-fit: cover; flex: none;
+}
+.noimg { line-height: 50px; text-align: center; background: #2a2a2a; }
+.artist { color: gray; font-size: 14px; }
+.src { font-size: 12px; }
+.dur { margin-left: auto; color: gray; font-size: 13px; }
+.heart { font-size: 22px; padding: 4px 8px; }
+
+/* ===== Lyrics, artist info ===== */
+#details { margin-bottom: 16px; font-size: 14px; }
+#artistInfo { color: gray; margin-bottom: 8px; }
+#lyrics {
+  white-space: pre-wrap; max-height: 160px; overflow: auto;
+  font-family: Arial; color: #ccc; margin: 0;
+}
+
+/* ===== Laptop layout: sidebar + neeche player bar ===== */
+@media (min-width: 800px) {
+  nav {
+    top: 0; right: auto; width: 200px; flex-direction: column;
+    padding: 20px 10px; border-top: none; border-right: 1px solid #3a2a22;
+  }
+  nav button { flex: none; text-align: left; border-radius: 10px; }
+  nav button.on { background: #3a2a22; }
+
+  main { margin-left: 200px; padding: 24px 24px 140px; }
+
+  #card {
+    position: fixed; left: 200px; right: 0; bottom: 0; z-index: 4; margin: 0;
+    border-radius: 0; display: grid; grid-template-columns: 1fr 2fr 1fr;
+    align-items: center; gap: 16px;
+  }
+  .np { display: flex; align-items: center; gap: 12px; text-align: left; }
+  #npArt { width: 60px; height: 60px; margin: 0; flex: none; border-radius: 10px; }
+  #npTitle { font-size: 16px; }
+  #npArtist { margin-bottom: 0; font-size: 14px; }
+  .controls { margin: 0 0 6px; }
+  .controls button { font-size: 20px; }
+  .controls #playBtn { width: 48px; height: 48px; font-size: 20px; }
+  .vol { display: block; justify-self: end; }
+}
+
+
+/* ===== Glow aur glass look ===== */
+body { background: #121212; }
+body::before, body::after {
+  content: ""; position: fixed; z-index: -1; border-radius: 50%;
+  filter: blur(80px); pointer-events: none;
+}
+body::before {
+  width: 420px; height: 420px; left: -120px; top: 20%;
+  background: linear-gradient(135deg, #ff4d6d, #ff7a45); opacity: 0.55;
+}
+body::after {
+  width: 480px; height: 480px; right: -140px; top: 8%;
+  background: linear-gradient(135deg, #ff7a45, #ffb347); opacity: 0.5;
+}
+nav { background: rgba(20, 20, 20, 0.6); backdrop-filter: blur(20px); }
+#card {
+  background: rgba(28, 28, 28, 0.72); backdrop-filter: blur(20px);
+  box-shadow: 0 0 40px rgba(255, 122, 69, 0.35);
+}
+h1 {
+  background: linear-gradient(90deg, #ff7a45, #ffb347);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ===== Table jaisi list ===== */
+.thead, .track {
+  display: grid; align-items: center; gap: 12px;
+  grid-template-columns: 40px 2.2fr 1.4fr 1.2fr 70px 40px;
+}
+.thead { color: #aaa; font-size: 13px; padding: 8px 12px; border-bottom: 1px solid #3a2a22; }
+.track { padding: 8px 12px; border-radius: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+.track.playing { background: linear-gradient(90deg, rgba(255, 122, 69, 0.3), rgba(255, 122, 69, 0.05)); }
+.num { color: #ff9f43; text-align: center; }
+.tcell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.tcell span, .artist, .album { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.artist, .album { color: #c9a28f; font-size: 14px; }
+.dur { margin-left: 0; text-align: right; }
+.track img, .noimg { width: 40px; height: 40px; }
+.noimg { line-height: 40px; }
+
+@media (max-width: 799px) {
+  .thead, .num, .album { display: none; }
+  .track { grid-template-columns: 1fr 45px 36px; grid-template-areas: "t d h" "a d h"; gap: 0 8px; }
+  .tcell { grid-area: t; }
+  .artist { grid-area: a; padding-left: 52px; }
+  .dur { grid-area: d; }
+  .heart { grid-area: h; }
+}
+
+
+/* ===== YouTube section ===== */
+.only-youtube { display: none; }
+body.tab-youtube .only-youtube { display: block; }
+body.tab-youtube .only-home, body.tab-youtube .only-search, body.tab-youtube .only-library,
+body.tab-youtube #card, body.tab-youtube #details, body.tab-youtube #list { display: none; }
+
+#ytNote { color: gray; font-size: 13px; margin: 0 0 12px; }
+#ytWrap { max-width: 560px; margin-bottom: 16px; border-radius: 12px; overflow: hidden; }
+.ytrow {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer;
+}
+.ytrow:hover { background: #2a2a2a; }
+.ytrow img { width: 100px; height: 56px; object-fit: cover; border-radius: 8px; flex: none; }
+.ytrow small { color: #c9a28f; }
+
+
+/* ===== Drive section ===== */
+.only-drive { display: none; }
+body.tab-drive .only-drive { display: block; }
+body.tab-drive .only-home, body.tab-drive .only-search,
+body.tab-drive .only-library, body.tab-drive .only-youtube { display: none; }
+#dNote { color: gray; font-size: 13px; margin: 0 0 12px; }
