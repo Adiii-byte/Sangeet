@@ -64,7 +64,7 @@ async function listDrive(mode) {
     const data = await res.json();
     if (!res.ok) {
       if (res.status === 401) { driveToken = ""; }
-      dNote("Drive error: " + (data.error ? data.error.message : res.status));
+      dNote("Drive error: " + JSON.stringify(data.error || res.status));
       return;
     }
     tracks = data.files.map(function (f) {
