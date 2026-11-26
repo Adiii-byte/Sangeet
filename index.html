@@ -1,96 +1,143 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-theme="nebula">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sangeet</title>
-  <link rel="icon" href="data:,">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b14"><title>Sangeet — Your sound, your space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="tab-home">
-
-  <nav>
-    <button data-tab="home" class="on">🏠 Home</button>
-    <button data-tab="search">🔍 Search</button>
-    <button data-tab="library">📚 Library</button>
-    <button data-tab="youtube">▶ YouTube</button>
-    <button data-tab="drive">☁ Drive</button>
-  </nav>
-
-  <main>
-    <h1>Sangeet</h1>
-
-    <div class="bar only-search">
-      <input id="q" placeholder="Search a song...">
-      <button id="btn">Search</button>
-    </div>
-
-    <div id="genres" class="only-home"></div>
-
-    <div class="only-library">
-      <label class="filebtn">📁 Meri files
-        <input type="file" id="files" accept="audio/*" multiple hidden>
-      </label>
-    </div>
-
-    <div class="only-drive">
-      <div class="bar">
-        <button id="dMine">🎼 Sangeet ki Drive</button>
-        <button id="dYours">👤 Meri Google Drive</button>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page="home"><span class="brand-mark">S</span><span>Sangeet</span></a>
+      <div class="side-label">DISCOVER</div>
+      <nav class="side-nav">
+        <button class="nav-link active" data-page="home"><span>⌂</span> Home</button>
+        <button class="nav-link" data-page="search"><span>⌕</span> Search</button>
+        <button class="nav-link" data-page="library"><span>▤</span> Your library</button>
+        <button class="nav-link" data-page="sources"><span>◎</span> Sources</button>
+      </nav>
+      <div class="side-label playlist-label">YOUR COLLECTION <button id="addPlaylist" title="Create playlist">＋</button></div>
+      <nav class="side-nav" id="playlistNav">
+        <button class="nav-link" data-page="liked"><span>♡</span> Liked songs</button>
+        <button class="nav-link" data-page="playlist"><span>◈</span> Late night drive</button>
+        <button class="nav-link" data-page="playlist"><span>◈</span> Focus mode</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="upgrade-card"><span class="spark">✦</span><b>Your sound. Your rules.</b><p>Make Sangeet feel like yours.</p><button data-page="appearance">Customize experience ↗</button></div>
+        <button class="nav-link" data-page="appearance"><span>⚙</span> Settings</button>
       </div>
-      <p id="dNote">Do option: Sangeet ki folder ke gaane, ya apni Google Drive ke gaane.</p>
-    </div>
+    </aside>
 
-    <div class="only-youtube">
-      <div class="bar">
-        <input id="yq" placeholder="YouTube pe gaana dhundo...">
-        <button id="ybtn">Search</button>
-      </div>
-      <p id="ytNote">Is section mein YouTube ke ads aayenge (official player).</p>
-      <div id="ytWrap"><div id="ytPlayer"></div></div>
-      <div id="ytList"></div>
-    </div>
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-brand" data-page="home"><span class="brand-mark">S</span> Sangeet</button>
+        <div class="history-controls"><button class="round-btn" id="backBtn" aria-label="Back">‹</button><button class="round-btn" id="forwardBtn" aria-label="Forward">›</button></div>
+        <label class="global-search"><span>⌕</span><input id="globalSearch" placeholder="What do you want to hear?" autocomplete="off"><kbd>CTRL K</kbd></label>
+        <button class="avatar" data-page="appearance" title="Appearance settings">A</button>
+      </header>
 
-    <div id="card">
-      <div class="np">
-        <div id="npArt"></div>
-        <div>
-          <div id="npTitle">Sangeet</div>
-          <div id="npArtist"></div>
-          <div id="now">Koi song select karo</div>
+      <section class="page active" id="page-home">
+        <div class="welcome-row"><div><div class="eyebrow"><span class="live-dot"></span> YOUR PERSONAL SOUNDSPACE</div><h1>Feel every <span class="gradient-text">frequency.</span></h1><p class="subhead">A little space for the music that moves you.</p></div><div class="date-chip" id="dateChip">YOUR SOUNDSPACE</div></div>
+        <div class="hero-card">
+          <div class="hero-copy"><span class="pill">✦ EDITOR'S PICK</span><p class="hero-kicker">A NEW DIMENSION OF SOUND</p><h2>Find your<br>next <em>favourite.</em></h2><p class="hero-description">Your next repeat-worthy track is just around the corner.</p><button class="primary-btn" data-page="search">Explore music <span>↗</span></button></div>
+          <div class="hero-orb"><div class="orb-ring ring-one"></div><div class="orb-ring ring-two"></div><div class="orb-core">♫</div><span class="orb-caption">Sangeet / 001</span></div>
+          <div class="hero-glow"></div>
         </div>
-      </div>
+        <section class="content-section"><div class="section-heading"><div><span class="eyebrow">PICK UP WHERE YOU LEFT OFF</span><h2>Jump back in</h2></div><button class="text-btn" data-page="library">View library ↗</button></div><div class="quick-grid" id="quickGrid"></div></section>
+        <section class="content-section"><div class="section-heading"><div><span class="eyebrow">CURATED FOR YOUR MOOD</span><h2>Made for you</h2></div><button class="text-btn" data-page="search">Discover more ↗</button></div><div class="album-grid" id="albumGrid"></div></section>
+      </section>
 
-      <div class="mid">
-        <div class="controls">
-          <button id="shuffleBtn" class="toggle">🔀</button>
-          <button id="prevBtn">⏮</button>
-          <button id="playBtn">▶</button>
-          <button id="nextBtn">⏭</button>
-          <button id="repeatBtn" class="toggle">🔁</button>
+      <section class="page" id="page-search">
+        <div class="page-heading"><span class="eyebrow">EXPLORE THE SOUND</span><h1>Search <span class="gradient-text">everything.</span></h1><p class="subhead">Find tracks, artists, albums and playlists.</p></div>
+        <label class="search-large"><span>⌕</span><input id="pageSearch" placeholder="Search songs, artists, albums..."></label>
+        <div class="section-heading"><div><span class="eyebrow">START SOMEWHERE</span><h2>Browse categories</h2></div></div>
+        <div class="category-grid"><button class="category-card cat-one" data-query="Chill">Chill <span>☁</span></button><button class="category-card cat-two" data-query="Focus">Focus <span>◉</span></button><button class="category-card cat-three" data-query="Indie">Indie <span>✳</span></button><button class="category-card cat-four" data-query="Electronic">Electronic <span>⌁</span></button></div>
+        <div class="section-heading results-heading"><div><span class="eyebrow">YOUR RESULTS</span><h2 id="resultsTitle">Suggested tracks</h2></div></div><div class="track-list" id="searchResults"></div>
+      </section>
+
+      <section class="page" id="page-library">
+        <div class="page-heading"><span class="eyebrow">ALL YOUR FAVOURITES</span><h1>Your <span class="gradient-text">library.</span></h1><p class="subhead">Everything you love, all in one place.</p></div>
+        <div class="library-tabs"><button class="tab active" data-filter="all">All</button><button class="tab" data-filter="tracks">Tracks</button><button class="tab" data-filter="albums">Albums</button><button class="tab" data-filter="playlists">Playlists</button></div>
+        <div class="album-grid" id="libraryGrid"></div>
+      </section>
+
+      <section class="page" id="page-liked">
+        <div class="page-heading"><span class="eyebrow">YOUR PERSONAL COLLECTION</span><h1>Liked <span class="gradient-text">songs.</span></h1><p class="subhead">The tracks you keep close.</p></div><div class="track-list" id="likedList"></div>
+      </section>
+
+      <section class="page" id="page-playlist">
+        <div class="page-heading"><span class="eyebrow">YOUR PLAYLIST</span><h1>Late night <span class="gradient-text">drive.</span></h1><p class="subhead">A soundtrack for the after-hours.</p></div><div class="track-list" id="playlistTracks"></div>
+      </section>
+
+      <section class="page" id="page-sources">
+        <div class="page-heading"><span class="eyebrow">MORE WAYS TO LISTEN</span><h1>Music <span class="gradient-text">sources.</span></h1><p class="subhead">YouTube, Spotify, Google Drive aur apni files, sab ek jagah.</p></div>
+        <div class="segmented src-tabs"><button class="selected" data-src="youtube">YouTube</button><button data-src="spotify">Spotify</button><button data-src="drive">Google Drive</button><button data-src="local">My files</button></div>
+
+        <div class="src-panel active" id="src-youtube">
+          <label class="search-large"><span>⌕</span><input id="ytq" placeholder="YouTube pe gaana dhundo..."></label>
+          <div class="src-actions"><button class="primary-btn" id="ytBtn">YouTube pe dhundo</button></div>
+          <p class="src-note">Official YouTube player se bajta hai, isliye ads aayenge.</p>
+          <div id="ytWrap"><div id="ytPlayer"></div></div>
+          <div class="track-list" id="ytList"></div>
         </div>
-        <div class="seekrow">
-          <span id="tCur">0:00</span>
-          <input type="range" id="seek" value="0" min="0" max="100" step="0.1">
-          <span id="tTot">0:00</span>
+
+        <div class="src-panel" id="src-spotify">
+          <label class="search-large"><span>⌕</span><input id="spq" placeholder="Spotify link paste karo, ya gaane ka naam likho"></label>
+          <div class="src-actions"><button class="primary-btn" id="spPlayBtn">Link bajao</button><button class="secondary-btn" id="spSearchBtn">Spotify pe dhundo</button></div>
+          <p class="src-note">Spotify ke official player se bajta hai. Free account mein aksar sirf 30 second ka preview milta hai.</p>
+          <div id="spFrame"></div>
+          <div class="track-list" id="spList"></div>
         </div>
-      </div>
 
-      <div class="vol">🔊 <input type="range" id="vol" min="0" max="1" step="0.01" value="1"></div>
-      <audio id="audio"></audio>
-    </div>
+        <div class="src-panel" id="src-drive">
+          <div class="src-actions"><button class="primary-btn" id="dMine">Sangeet ki Drive</button><button class="secondary-btn" id="dYours">Meri Google Drive</button></div>
+          <p class="src-note" id="dNote">Do option: Sangeet ke folder ke gaane, ya apni Google Drive ke gaane.</p>
+          <div class="track-list" id="driveList"></div>
+        </div>
 
-    <div id="details">
-      <div id="artistInfo"></div>
-      <div id="similar"></div>
-      <pre id="lyrics"></pre>
-    </div>
+        <div class="src-panel" id="src-local">
+          <div class="src-actions"><label class="primary-btn file-btn">Gaane chuno<input type="file" id="localFiles" accept="audio/*" multiple hidden></label></div>
+          <p class="src-note">Tumhare phone ya computer ke gaane, kahin upload nahi hote.</p>
+          <div class="track-list" id="localList"></div>
+        </div>
+      </section>
 
-    <div id="list"></div>
-  </main>
+      <section class="page" id="page-appearance">
+        <div class="page-heading"><span class="eyebrow">MAKE IT YOURS</span><h1>Appearance <span class="gradient-text">studio.</span></h1><p class="subhead">Your player, your personality. Every choice is yours.</p></div>
+        <div class="settings-layout">
+          <div class="settings-panel">
+            <div class="setting-block"><div class="setting-title"><div><h3>Choose your atmosphere</h3><p>Switch the entire visual mood.</p></div><span class="setting-icon">✦</span></div>
+              <div class="theme-options">
+                <button class="theme-option selected" data-theme-choice="nebula"><span class="theme-swatch sw-nebula"></span><b>Nebula</b><small>Purple / Cyan</small></button>
+                <button class="theme-option" data-theme-choice="midnight"><span class="theme-swatch sw-midnight"></span><b>Midnight</b><small>Black / Silver</small></button>
+                <button class="theme-option" data-theme-choice="aurora"><span class="theme-swatch sw-aurora"></span><b>Aurora</b><small>Teal / Violet</small></button>
+                <button class="theme-option" data-theme-choice="light"><span class="theme-swatch sw-light"></span><b>Daylight</b><small>Soft / Clean</small></button>
+              </div>
+            </div>
+            <div class="setting-block"><div class="setting-title"><div><h3>Accent colour</h3><p>Pick a colour that feels like you.</p></div></div><div class="color-options"><button class="color-dot purple selected" data-accent="#a855f7" aria-label="Purple"></button><button class="color-dot cyan" data-accent="#00d9ff" aria-label="Cyan"></button><button class="color-dot green" data-accent="#6ee7b7" aria-label="Green"></button><button class="color-dot pink" data-accent="#fb7185" aria-label="Pink"></button><button class="color-dot amber" data-accent="#fbbf24" aria-label="Amber"></button><label class="custom-color">＋ <input type="color" id="customAccent" value="#a855f7" aria-label="Custom accent colour"></label></div></div>
+            <div class="setting-block"><div class="setting-title"><div><h3>Interface density</h3><p>Choose how much breathing room you like.</p></div></div><div class="segmented"><button class="selected" data-density="comfortable">Comfortable</button><button data-density="compact">Compact</button><button data-density="spacious">Spacious</button></div></div>
+            <div class="setting-block"><div class="setting-title"><div><h3>Navigation layout</h3><p>Choose how you move around.</p></div></div><div class="segmented"><button class="selected" data-navigation="sidebar">Sidebar</button><button data-navigation="bottom">Bottom bar</button></div></div>
+            <div class="setting-block setting-row"><div><h3>Motion effects</h3><p>Ambient transitions and hover effects.</p></div><label class="switch"><input type="checkbox" id="motionToggle" checked><span></span></label></div>
+            <div class="setting-block setting-row"><div><h3>Show visualizer</h3><p>Animated bars in the player.</p></div><label class="switch"><input type="checkbox" id="visualizerToggle" checked><span></span></label></div>
+            <div class="settings-actions"><button class="secondary-btn" id="resetSettings">Reset appearance</button><span id="savedMessage">Changes save automatically</span></div>
+          </div>
+          <aside class="preview-panel"><span class="eyebrow">LIVE PREVIEW</span><div class="preview-device"><div class="preview-top"><span>Sangeet</span><span>•••</span></div><div class="preview-art"><span>♫</span></div><div class="preview-track"><b>Midnight City</b><small>M83 · Hurry Up, We're Dreaming</small></div><div class="preview-progress"><i></i></div><div class="preview-controls"><span>↶</span><b>Ⅱ</b><span>↷</span></div><div class="preview-caption">PREVIEW / YOUR THEME</div></div><p>Changes apply instantly across your experience.</p></aside>
+        </div>
+      </section>
+    </main>
 
-  <script src="script.js"></script>
-  <script src="youtube.js"></script>
-  <script src="drive.js"></script>
-</body>
-</html>
+    <footer class="player-bar" id="playerBar">
+      <div class="now-playing"><div class="mini-art" id="miniArt">♫</div><div class="now-meta"><b id="nowTitle">Choose a track</b><small id="nowArtist">Your soundtrack starts here</small></div><button class="like-btn" id="likeCurrent" aria-label="Like track">♡</button></div>
+      <div class="player-center"><div class="player-controls"><button id="shuffleBtn" title="Shuffle">⤨</button><button id="prevBtn" title="Previous">◂</button><button class="play-main" id="playBtn" title="Play">▶</button><button id="nextBtn" title="Next">▸</button><button id="repeatBtn" title="Repeat">↻</button></div><div class="timeline"><span id="currentTime">0:00</span><input type="range" id="progress" min="0" max="100" value="0"><span id="duration">0:00</span></div></div>
+      <div class="player-extras"><button id="queueBtn" title="Queue">☷</button><span>♫</span><input type="range" id="volume" min="0" max="100" value="75" aria-label="Volume"></div>
+    </footer>
+    <nav class="mobile-nav"><button class="active" data-page="home"><span>⌂</span>Home</button><button data-page="search"><span>⌕</span>Search</button><button data-page="library"><span>▤</span>Library</button><button data-page="sources"><span>◎</span>Sources</button><button data-page="appearance"><span>⚙</span>Settings</button></nav>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <audio id="audio" preload="metadata"></audio>
+  <script src="app.js"></script>
+  <script src="sources.js"></script>
+  <!-- Later, add your own source scripts before app.js or load them as ES modules. -->
+</body></html>
