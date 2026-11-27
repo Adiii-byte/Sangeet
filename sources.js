@@ -219,6 +219,7 @@ window.toggleLike = function (id) {
 };
 
 audio.addEventListener("ended", () => $("#nextBtn").click());
+audio.addEventListener("play", stopEmbeds);   // gaana shuru ho to YouTube/Spotify ruk jaye (ek baar mein ek hi)
 audio.addEventListener("error", () => {
   if (!audio.getAttribute("src")) return;
   toast("Ye gaana nahi baj paya, agla try kar rahe hain...");
@@ -228,20 +229,19 @@ $("#pageSearch").addEventListener("keydown", e => { if (e.key === "Enter") searc
 
 // ---------- Sources page ----------
 let ytPlayer = null, ytItems = [], ytIndex = -1;
-function stopEmbeds() {
+function stopYT() {
   if (ytPlayer && ytPlayer.pauseVideo) { try { ytPlayer.pauseVideo(); } catch (e) {} }
-  $("#spFrame").innerHTML = "";
+  $("#ytFloat").hidden = true;
 }
+function stopEmbeds() { stopYT(); stopSpotify(); }
 const _showPage = window.showPage;
 window.showPage = function (name) {
-  if (name !== "sources") stopEmbeds();
+  // YouTube aur Spotify floating window dusre pages pe bhi chalti rehti hain
   _showPage(name);
-  if (name === "sources") audio.pause();
 };
 $$("[data-src]").forEach(b => b.addEventListener("click", () => {
   $$("[data-src]").forEach(x => x.classList.toggle("selected", x === b));
   $$(".src-panel").forEach(p => p.classList.toggle("active", p.id === "src-" + b.dataset.src));
-  stopEmbeds();
 }));
 
 // YouTube (official player, ads aayenge)
@@ -264,49 +264,137 @@ async function ytSearch() {
       id: it.id.videoId, title: decodeHtml(it.snippet.title),
       channel: decodeHtml(it.snippet.channelTitle), thumb: it.snippet.thumbnails.medium.url
     }));
-    $("#ytList").innerHTML = ytItems.map((v, i) =>
-      '<div class="track-row yt" data-yt="' + i + '"><span class="track-number">▶</span>' +
-      '<div class="track-art art" style="--art:url(\'' + safeUrl(v.thumb) + '\') center/cover no-repeat">&#8203;</div>' +
-      '<div class="track-info"><b>' + esc2(v.title) + "</b><small>" + esc2(v.channel) + "</small></div><span></span><span></span></div>"
-    ).join("") || '<p class="subhead">Kuch nahi mila.</p>';
+    ytIndex = -1;
+    ytRender();
   } catch (e) { $("#ytList").innerHTML = '<p class="subhead">Internet ya server ki dikkat, dobara try karo.</p>'; }
 }
+function ytRender() {
+  $("#ytList").innerHTML = ytItems.map((v, i) =>
+    '<div class="track-row yt' + (i === ytIndex ? " playing" : "") + '" data-yt="' + i + '"><span class="track-number">' + (i === ytIndex ? "▶" : String(i + 1).padStart(2, "0")) + '</span>' +
+    '<div class="track-art art" style="--art:url(\'' + safeUrl(v.thumb) + '\') center/cover no-repeat">&#8203;</div>' +
+    '<div class="track-info"><b>' + esc2(v.title) + "</b><small>" + esc2(v.channel) + "</small></div><span></span><span></span></div>"
+  ).join("") || '<p class="subhead">Kuch nahi mila.</p>';
+}
+let ytAuto = true;
+function ytNext() {
+  if (ytIndex + 1 < ytItems.length) ytPlayIndex(ytIndex + 1);
+  else toast("YouTube list khatam ho gayi.");
+}
+function ytPrev() { if (ytIndex > 0) ytPlayIndex(ytIndex - 1); }
 function ytPlayIndex(i) {
   if (!window.YT || !YT.Player) { toast("YouTube player load ho raha hai, ek second baad dobara tap karo."); return; }
   audio.pause();
+  stopSpotify();
+  $("#ytFloat").hidden = false;
   ytIndex = i;
+  ytRender();
   const id = ytItems[i].id;
   if (!ytPlayer) {
     ytPlayer = new YT.Player("ytPlayer", {
-      width: "100%", height: "360", videoId: id, playerVars: { autoplay: 1, playsinline: 1 },
+      width: "100%", height: "100%", videoId: id, playerVars: { autoplay: 1, playsinline: 1 },
       events: {
-        onStateChange: e => { if (e.data === YT.PlayerState.ENDED && ytIndex + 1 < ytItems.length) ytPlayIndex(ytIndex + 1); },
-        onError: () => { toast("Ye video embed nahi ho sakta, agla try kar rahe hain..."); if (ytIndex + 1 < ytItems.length) ytPlayIndex(ytIndex + 1); }
+        onStateChange: e => { if (e.data === YT.PlayerState.ENDED && ytAuto) ytNext(); },
+        onError: () => { toast("Ye video embed nahi ho sakta" + (ytAuto ? ", agla try kar rahe hain..." : ".")); if (ytAuto) ytNext(); }
       }
     });
   } else { ytPlayer.loadVideoById(id); }
 }
+$("#ytAll").addEventListener("click", () => { if (ytItems.length) ytPlayIndex(0); else toast("Pehle YouTube pe kuch dhundo."); });
+$("#ytPrev").addEventListener("click", ytPrev);
+$("#ytNext").addEventListener("click", ytNext);
+$("#ytAuto").addEventListener("change", e => { ytAuto = e.target.checked; });
 $("#ytBtn").addEventListener("click", ytSearch);
+$("#ytClose").addEventListener("click", () => { if (ytPlayer && ytPlayer.stopVideo) { try { ytPlayer.stopVideo(); } catch (e) {} } $("#ytFloat").hidden = true; });
 $("#ytq").addEventListener("keydown", e => { if (e.key === "Enter") ytSearch(); });
 $("#ytList").addEventListener("click", e => { const r = e.target.closest("[data-yt]"); if (r) ytPlayIndex(Number(r.dataset.yt)); });
 
-// Spotify (official embed: free account pe aksar 30 second ka preview)
-let spLinks = JSON.parse(localStorage.getItem("sangeet-splinks") || "[]");
-function spEmbed(link) {
+// Spotify (official embed + iFrame API: saved gaane back-to-back chal sakte hain)
+// Spotify playlists: naam -> saved links ki list (browser mein save hoti hain)
+let spData = JSON.parse(localStorage.getItem("sangeet-spplaylists") || "null");
+if (!spData) spData = { cur: "My Spotify", lists: { "My Spotify": JSON.parse(localStorage.getItem("sangeet-splinks") || "[]") } };
+let spCur = spData.lists[spData.cur] ? spData.cur : Object.keys(spData.lists)[0];
+let spLinks = spData.lists[spCur];
+let spPlayList = spLinks;
+function spSave() { spData.cur = spCur; localStorage.setItem("sangeet-spplaylists", JSON.stringify(spData)); }
+let spApi = null, spCtl = null, spPending = null, spIndex = -1, spType = "", spAuto = true;
+let spEnding = false, spLast = null, spWantPlay = false;
+window.onSpotifyIframeApiReady = api => {
+  spApi = api;
+  if (spPending) { const u = spPending; spPending = null; spLoad(u); }
+};
+const spTag = document.createElement("script");
+spTag.src = "https://open.spotify.com/embed/iframe-api/v1";
+spTag.async = true;
+document.head.appendChild(spTag);
+
+function spUri(link) {
   const m = link.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|playlist|artist|episode|show)\/([A-Za-z0-9]+)/);
-  return m ? { type: m[1], url: "https://open.spotify.com/embed/" + m[1] + "/" + m[2] } : null;
+  return m ? { type: m[1], uri: "spotify:" + m[1] + ":" + m[2] } : null;
 }
-function spPlay(link) {
-  const e = spEmbed(link);
-  if (!e) { toast("Ye Spotify ka sahi link nahi lag raha."); return false; }
+function stopSpotify() {
+  spWantPlay = false;
+  spEnding = true;
+  if (spCtl) { try { spCtl.pause(); } catch (e) {} }
+  $("#spFloat").hidden = true;
+}
+function spLoad(u) {
   audio.pause();
-  $("#spFrame").innerHTML = '<iframe src="' + esc2(e.url) + '" width="100%" height="' + (e.type === "track" ? 152 : 352) +
-    '" frameborder="0" allow="encrypted-media; clipboard-write; fullscreen" loading="lazy"></iframe>';
-  return true;
+  stopYT();
+  spType = u.type;
+  spEnding = false;
+  spLast = null;
+  spWantPlay = true;
+  $("#spFloat").hidden = false;
+  if (spCtl) {
+    spCtl.loadUri(u.uri);
+    setTimeout(() => { if (spWantPlay) spCtl.play(); }, 700);
+    return;
+  }
+  if (!spApi) { spPending = u; toast("Spotify player load ho raha hai..."); return; }
+  spApi.createController($("#spEmbed"), { width: "100%", height: 152, uri: u.uri }, c => {
+    spCtl = c;
+    c.addListener("ready", () => { if (spWantPlay) c.play(); });
+    c.addListener("playback_update", spOnUpdate);
+  });
+}
+// gaana khatam hote hi agla saved gaana
+function spOnUpdate(e) {
+  const d = e.data;
+  if (!d.isPaused) spWantPlay = false;
+  const prev = spLast;
+  spLast = d;
+  if (!spAuto || spEnding || spIndex < 0 || spType !== "track") return;
+  const wasNearEnd = prev && prev.duration > 0 && prev.position >= prev.duration - 1500;
+  const finished = (d.isPaused && wasNearEnd) || (d.duration > 0 && d.position >= d.duration - 250);
+  if (finished) { spEnding = true; setTimeout(spNext, 400); }
+}
+function spPlayAt(i, list) {
+  list = list || spLinks;
+  const l = list[i];
+  const u = l && spUri(l.link);
+  if (!u) return;
+  spPlayList = list;
+  spIndex = i;
+  spList();
+  spLoad(u);
+}
+function spNext() {
+  if (spIndex + 1 < spPlayList.length) spPlayAt(spIndex + 1, spPlayList);
+  else toast("Saved list khatam ho gayi.");
+}
+function spPrev() { if (spIndex > 0) spPlayAt(spIndex - 1, spPlayList); }
+function spRenderPls() {
+  const names = Object.keys(spData.lists);
+  $("#spPls").innerHTML = names.map((n, i) =>
+    '<button class="pl-chip' + (n === spCur ? " on" : "") + '" data-pl="' + i + '">' + esc2(n) + " (" + spData.lists[n].length + ")</button>").join("") +
+    '<button class="pl-chip" id="plNew">＋ New playlist</button><button class="pl-chip" id="plRen">Rename</button><button class="pl-chip" id="plDel">Delete</button>';
 }
 function spList() {
+  spRenderPls();
+  const here = spPlayList === spLinks;
   $("#spList").innerHTML = spLinks.map((x, i) =>
-    '<div class="track-row sp" data-sp="' + i + '"><span class="track-number">♫</span><div class="track-art art" style="--art:linear-gradient(135deg,#1db954,#0b3d20)">&#8203;</div>' +
+    '<div class="track-row sp' + (here && i === spIndex ? " playing" : "") + '" data-sp="' + i + '"><span class="track-number">' + (here && i === spIndex ? "▶" : String(i + 1).padStart(2, "0")) + '</span>' +
+    '<div class="track-art art" style="--art:linear-gradient(135deg,#1db954,#0b3d20)">&#8203;</div>' +
     '<div class="track-info"><b>' + esc2(x.label) + '</b><small>Spotify link</small></div><span></span>' +
     '<button class="track-like" data-spdel="' + i + '" aria-label="Remove">✕</button></div>').join("");
 }
@@ -316,24 +404,72 @@ async function spLabel(link) {
 }
 async function spPlayInput() {
   const link = $("#spq").value.trim();
-  if (!spPlay(link)) return;
-  if (!spLinks.some(x => x.link === link)) {
-    spLinks.unshift({ link, label: await spLabel(link) });
-    localStorage.setItem("sangeet-splinks", JSON.stringify(spLinks));
-    spList();
-  }
+  if (!spUri(link)) { toast("Ye Spotify ka sahi link nahi lag raha."); return; }
+  let i = spLinks.findIndex(x => x.link === link);
+  if (i < 0) {
+    spLinks.push({ link, label: link });
+    i = spLinks.length - 1;
+    spSave();
+    spPlayAt(i);
+    spLabel(link).then(t => { spLinks[i].label = t; spSave(); spList(); });
+  } else spPlayAt(i);
 }
 $("#spPlayBtn").addEventListener("click", spPlayInput);
+$("#spAll").addEventListener("click", () => { if (spLinks.length) spPlayAt(0); else toast("Pehle kuch Spotify links save karo."); });
+$("#spPrev").addEventListener("click", spPrev);
+$("#spNext").addEventListener("click", spNext);
+$("#spAuto").addEventListener("change", e => { spAuto = e.target.checked; });
+$("#spClose").addEventListener("click", stopSpotify);
 $("#spSearchBtn").addEventListener("click", () => {
   const q = $("#spq").value.trim();
   if (q) window.open("https://open.spotify.com/search/" + encodeURIComponent(q), "_blank", "noopener");
 });
 $("#spq").addEventListener("keydown", e => { if (e.key === "Enter") spPlayInput(); });
+$("#spPls").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  const names = Object.keys(spData.lists);
+  if (b.dataset.pl !== undefined) {
+    spCur = names[Number(b.dataset.pl)];
+    spLinks = spData.lists[spCur];
+  } else if (b.id === "plNew") {
+    const n = (prompt("Playlist ka naam") || "").trim();
+    if (!n) return;
+    if (spData.lists[n]) { toast("Is naam ki playlist pehle se hai."); return; }
+    spData.lists[n] = [];
+    spCur = n;
+    spLinks = spData.lists[n];
+  } else if (b.id === "plRen") {
+    const n = (prompt("Naya naam", spCur) || "").trim();
+    if (!n || n === spCur) return;
+    if (spData.lists[n]) { toast("Is naam ki playlist pehle se hai."); return; }
+    const nl = {};
+    names.forEach(k => { nl[k === spCur ? n : k] = spData.lists[k]; });
+    spData.lists = nl;
+    spCur = n;
+  } else if (b.id === "plDel") {
+    if (names.length < 2) { toast("Kam se kam ek playlist rehni chahiye."); return; }
+    if (!confirm("“" + spCur + "” playlist delete karein?")) return;
+    if (spPlayList === spLinks) spIndex = -1;
+    delete spData.lists[spCur];
+    spCur = Object.keys(spData.lists)[0];
+    spLinks = spData.lists[spCur];
+  }
+  spSave();
+  spList();
+});
 $("#spList").addEventListener("click", e => {
   const del = e.target.closest("[data-spdel]");
-  if (del) { spLinks.splice(Number(del.dataset.spdel), 1); localStorage.setItem("sangeet-splinks", JSON.stringify(spLinks)); spList(); return; }
+  if (del) {
+    const k = Number(del.dataset.spdel);
+    spLinks.splice(k, 1);
+    if (spPlayList === spLinks) { if (k < spIndex) spIndex--; else if (k === spIndex) spIndex = -1; }
+    spSave();
+    spList();
+    return;
+  }
   const row = e.target.closest("[data-sp]");
-  if (row) spPlay(spLinks[Number(row.dataset.sp)].link);
+  if (row) spPlayAt(Number(row.dataset.sp));
 });
 
 // Google Drive

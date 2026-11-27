@@ -78,16 +78,17 @@
         <div class="src-panel active" id="src-youtube">
           <label class="search-large"><span>⌕</span><input id="ytq" placeholder="YouTube pe gaana dhundo..."></label>
           <div class="src-actions"><button class="primary-btn" id="ytBtn">YouTube pe dhundo</button></div>
-          <p class="src-note">Official YouTube player se bajta hai, isliye ads aayenge.</p>
-          <div id="ytWrap"><div id="ytPlayer"></div></div>
+          <div class="src-actions sp-ctl"><button class="secondary-btn" id="ytAll">Play all</button><button class="secondary-btn" id="ytPrev">⏮</button><button class="secondary-btn" id="ytNext">⏭</button><span class="auto-label">Autoplay <label class="switch"><input type="checkbox" id="ytAuto" checked><span></span></label></span></div>
+          <p class="src-note">Official YouTube player se bajta hai, isliye ads aayenge. Video neeche kone ke floating window mein chalta hai aur dusre pages pe bhi chalta rehta hai. Autoplay on ho to search ke videos ek ke baad ek chalte hain.</p>
           <div class="track-list" id="ytList"></div>
         </div>
 
         <div class="src-panel" id="src-spotify">
           <label class="search-large"><span>⌕</span><input id="spq" placeholder="Spotify link paste karo, ya gaane ka naam likho"></label>
+          <div class="pl-row" id="spPls"></div>
           <div class="src-actions"><button class="primary-btn" id="spPlayBtn">Link bajao</button><button class="secondary-btn" id="spSearchBtn">Spotify pe dhundo</button></div>
-          <p class="src-note">Spotify ke official player se bajta hai. Free account mein aksar sirf 30 second ka preview milta hai.</p>
-          <div id="spFrame"></div>
+          <div class="src-actions sp-ctl"><button class="secondary-btn" id="spAll">Play all</button><button class="secondary-btn" id="spPrev">⏮</button><button class="secondary-btn" id="spNext">⏭</button><span class="auto-label">Autoplay <label class="switch"><input type="checkbox" id="spAuto" checked><span></span></label></span></div>
+          <p class="src-note">Spotify ke official player se bajta hai (neeche kone ke window mein, dusre pages pe bhi chalta rehta hai). Free account mein aksar sirf 30 second ka preview milta hai. Autoplay on ho to saved gaane ek ke baad ek chalte hain.</p>
           <div class="track-list" id="spList"></div>
         </div>
 
@@ -135,6 +136,8 @@
     </footer>
     <nav class="mobile-nav"><button class="active" data-page="home"><span>⌂</span>Home</button><button data-page="search"><span>⌕</span>Search</button><button data-page="library"><span>▤</span>Library</button><button data-page="sources"><span>◎</span>Sources</button><button data-page="appearance"><span>⚙</span>Settings</button></nav>
   </div>
+  <div id="ytFloat" hidden><button id="ytClose" aria-label="Close video">✕</button><div id="ytWrap"><div id="ytPlayer"></div></div></div>
+  <div id="spFloat" hidden><button id="spClose" aria-label="Close Spotify">✕</button><div id="spEmbed"></div></div>
   <div class="toast" id="toast" role="status"></div>
   <audio id="audio" preload="metadata"></audio>
   <script src="app.js"></script>
