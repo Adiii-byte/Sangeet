@@ -62,3 +62,34 @@ body:has(#ytFloat:not([hidden])) .main-area{padding-bottom:calc(var(--player) + 
 }
 
 .track-row.yt.playing{background:rgba(168,85,247,.16)}
+
+/* ===== Futuristic / Glassmorphism themes: Glass, Cyber, Sunset, Holo ===== */
+[data-theme="glass"]{--bg:#0b0720;--surface:rgba(255,255,255,.08);--surface2:rgba(255,255,255,.13);--card:rgba(255,255,255,.08);--text:#f7f4ff;--muted:#b6aed6;--line:rgba(255,255,255,.18);--accent:#a78bfa;--accent2:#22d3ee;--glow:rgba(167,139,250,.35);--blur:22px;--bgimg:radial-gradient(60% 50% at 12% 8%,rgba(124,58,237,.85),transparent 62%),radial-gradient(50% 45% at 88% 18%,rgba(6,182,212,.7),transparent 62%),radial-gradient(60% 55% at 72% 96%,rgba(236,72,153,.7),transparent 62%),#0b0720}
+[data-theme="cyber"]{--bg:#04060f;--surface:rgba(8,16,36,.62);--surface2:rgba(0,240,255,.09);--card:rgba(8,16,36,.62);--text:#e8fbff;--muted:#7fa8b5;--line:rgba(0,240,255,.28);--accent:#00f0ff;--accent2:#ff2bd6;--glow:rgba(0,240,255,.35);--blur:14px;--bgimg:linear-gradient(rgba(0,240,255,.07) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,rgba(0,240,255,.07) 1px,transparent 1px) 0 0/44px 44px,radial-gradient(55% 40% at 85% 0%,rgba(255,43,214,.28),transparent 70%),radial-gradient(50% 40% at 8% 100%,rgba(0,240,255,.24),transparent 70%),#04060f}
+[data-theme="sunset"]{--bg:#1a0b1f;--surface:rgba(255,255,255,.09);--surface2:rgba(255,255,255,.14);--card:rgba(255,255,255,.09);--text:#fff6f0;--muted:#d9b8bd;--line:rgba(255,255,255,.2);--accent:#ff7a45;--accent2:#ff3d81;--glow:rgba(255,122,69,.38);--blur:22px;--bgimg:radial-gradient(60% 50% at 10% 8%,rgba(255,122,69,.85),transparent 62%),radial-gradient(55% 50% at 92% 22%,rgba(255,61,129,.75),transparent 62%),radial-gradient(60% 60% at 58% 100%,rgba(124,58,237,.7),transparent 62%),#1a0b1f}
+[data-theme="holo"]{--bg:#070711;--surface:rgba(255,255,255,.07);--surface2:rgba(255,255,255,.12);--card:rgba(255,255,255,.07);--text:#f5f3ff;--muted:#aeb0cf;--line:rgba(255,255,255,.2);--accent:#c4b5fd;--accent2:#67e8f9;--glow:rgba(196,181,253,.3);--blur:26px;--bgimg:linear-gradient(rgba(7,7,17,.5),rgba(7,7,17,.75)),conic-gradient(from 215deg at 72% 18%,#312e81,#0e7490,#7e22ce,#be185d,#0e7490,#312e81)}
+
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) body{background:var(--bgimg);background-attachment:fixed}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) :is(.sidebar,.topbar,.player-bar,.mobile-nav,.global-search,.search-large,.upgrade-card,.settings-panel,.preview-device,.quick-card,.album-card,.theme-option,.round-btn,.avatar){-webkit-backdrop-filter:blur(var(--blur)) saturate(165%);backdrop-filter:blur(var(--blur)) saturate(165%);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 12px 40px rgba(0,0,0,.28)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) :is(.topbar,.player-bar,.mobile-nav){background:var(--surface)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .hero-card{background:linear-gradient(120deg,rgba(255,255,255,.17),rgba(255,255,255,.05));border-color:var(--line);-webkit-backdrop-filter:blur(var(--blur)) saturate(160%);backdrop-filter:blur(var(--blur)) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 24px 70px rgba(0,0,0,.35)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .orb-core{background:linear-gradient(145deg,var(--accent),var(--accent2));box-shadow:0 0 75px var(--glow)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .pill{background:var(--glow);color:var(--text)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .primary-btn{background:linear-gradient(100deg,var(--accent),var(--accent2));color:#0b0b14;box-shadow:0 8px 30px var(--glow)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .nav-link.active{background:var(--surface2);box-shadow:inset 3px 0 var(--accent),0 0 22px var(--glow)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .track-row:hover{background:var(--surface2)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) :is(.quick-card,.album-card):hover{transform:translateY(-3px);box-shadow:0 14px 44px var(--glow)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) .theme-option.selected{box-shadow:0 0 18px var(--glow),0 0 0 1px var(--accent)}
+[data-theme="cyber"] :is(.quick-card,.album-card,.global-search,.search-large,.hero-card,.upgrade-card,.settings-panel,.category-card,.primary-btn,.theme-option,.preview-device){border-radius:6px}
+[data-theme="cyber"] :is(.sidebar,.topbar,.player-bar,.mobile-nav,.quick-card,.album-card,.hero-card,.global-search,.search-large,.upgrade-card,.settings-panel){box-shadow:0 0 18px rgba(0,240,255,.13),inset 0 0 22px rgba(0,240,255,.05)}
+[data-theme="cyber"] h1,[data-theme="cyber"] h2{text-transform:uppercase;letter-spacing:.05em}
+[data-theme="cyber"] .hero-card::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px);pointer-events:none}
+[data-theme="cyber"] .gradient-text{filter:drop-shadow(0 0 14px rgba(0,240,255,.5))}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]){--surface:rgba(24,18,48,.9);--surface2:rgba(40,32,72,.92)}}
+@media(max-width:700px){:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]){--blur:14px} :is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) :is(.quick-card,.album-card){-webkit-backdrop-filter:none;backdrop-filter:none}}
+.sw-glass{background:linear-gradient(130deg,#7c3aed,#06b6d4 60%,#ec4899)}
+.sw-cyber{background:linear-gradient(130deg,#04060f 40%,#00f0ff 75%,#ff2bd6)}
+.sw-sunset{background:linear-gradient(130deg,#ff7a45,#ff3d81 60%,#7c3aed)}
+.sw-holo{background:conic-gradient(from 200deg,#312e81,#0e7490,#7e22ce,#be185d,#312e81)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) :is(.global-search,.search-large) input::placeholder{color:rgba(255,255,255,.78)}
+:is([data-theme="glass"],[data-theme="cyber"],[data-theme="sunset"],[data-theme="holo"]) :is(.global-search,.search-large){color:rgba(255,255,255,.85)}

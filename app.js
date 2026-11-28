@@ -3,6 +3,7 @@ const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 const tracks=[];
 const albums=[{title:"Late night thoughts",artist:"A Sangeet mix",symbol:"☾",art:"linear-gradient(135deg,#7d5ac5,#152d4a)"},{title:"Soft focus",artist:"Calm collection",symbol:"☁",art:"linear-gradient(135deg,#6cabb0,#d5b5a4)"},{title:"Electric dreams",artist:"Electronic mix",symbol:"⌁",art:"linear-gradient(135deg,#e77caa,#5546a6)"},{title:"Indie skies",artist:"Independent voices",symbol:"✳",art:"linear-gradient(135deg,#dc9a5d,#315d70)"},{title:"After hours",artist:"Night collection",symbol:"◇",art:"linear-gradient(135deg,#4356a1,#10182e)"}];
+const THEME_ACCENTS={glass:"#a78bfa",cyber:"#00f0ff",sunset:"#ff7a45",holo:"#c4b5fd"};
 const defaults={theme:"nebula",accent:"#a855f7",density:"comfortable",navigation:"sidebar",motion:true,visualizer:true};
 let settings={...defaults,...JSON.parse(localStorage.getItem("sangeet-settings")||"{}")};
 let current=null, liked=JSON.parse(localStorage.getItem("sangeet-liked")||"[]"), queue=[...tracks], queueIndex=0, isPlaying=false;
@@ -39,7 +40,7 @@ document.addEventListener("click",e=>{
  const likeFirst=e.target.closest("[data-like]");if(likeFirst){toggleLike(String(likeFirst.dataset.like));return}
  const track=e.target.closest("[data-track]");if(track){playTrack(findTrack(track.dataset.track));return}
  const like=e.target.closest("[data-like]");if(like){toggleLike(Number(like.dataset.like));return}
- const theme=e.target.closest("[data-theme-choice]");if(theme){settings.theme=theme.dataset.themeChoice;applySettings();saveSettings();return}
+ const theme=e.target.closest("[data-theme-choice]");if(theme){settings.theme=theme.dataset.themeChoice;if(THEME_ACCENTS[settings.theme])settings.accent=THEME_ACCENTS[settings.theme];applySettings();saveSettings();return}
  const accent=e.target.closest("[data-accent]");if(accent){settings.accent=accent.dataset.accent;applySettings();saveSettings();return}
  const density=e.target.closest("[data-density]");if(density){settings.density=density.dataset.density;applySettings();saveSettings();return}
  const nav=e.target.closest("[data-navigation]");if(nav){settings.navigation=nav.dataset.navigation;applySettings();saveSettings();return}
